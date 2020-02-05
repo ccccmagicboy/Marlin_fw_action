@@ -1,0 +1,59 @@
+#===================================================================================
+# https://github.com/ccccmagicboy/Marlin_fw_action
+# Description: Build Marlin firmware using GitHub Actions.
+# Lisence: MIT
+# Author: ccccmagicboy
+# Url: https://ccrobot-online.com
+#===================================================================================
+
+name: MARLIN2_BUILD
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+    paths-ignore:
+    - '**.md'
+  schedule:
+    - cron: 0 9 * * *
+  # watch:
+    # types: [started]
+    
+# ┌───────────── minute (0 - 59)
+# │ ┌───────────── hour (0 - 23)
+# │ │ ┌───────────── day of the month (1 - 31)
+# │ │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+# │ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+# │ │ │ │ │                                   
+# │ │ │ │ │
+# │ │ │ │ │
+# * * * * *    
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  build_0:
+    name: Build 2.0.x
+    env:
+      REPO_URL: https://github.com/MarlinFirmware/Marlin.git
+      REPO_BRANCH: 2.0.x
+    runs-on: ubuntu-16.04
+
+    steps:
+    - name: Checkout this repos
+      uses: actions/checkout@v2  
+
+  build_1:
+    name: Build bugfix-2.0.x
+    env:
+      REPO_URL: https://github.com/MarlinFirmware/Marlin.git
+      REPO_BRANCH: bugfix-2.0.x
+    runs-on: ubuntu-16.04
+    
+    steps:
+    - name: Checkout this repos
+      uses: actions/checkout@v2  
