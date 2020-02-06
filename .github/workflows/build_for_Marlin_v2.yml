@@ -9,14 +9,12 @@
 name: MARLIN2_BUILD
 
 on:
-  pull_request:
-    branches:
-    - master
   push:
     branches:
     - master
-    paths-ignore:
-    - '**.md'
+    paths:
+    - '.github/workflows/build_for_Marlin_v2.yml'
+    - '!**.md'
   schedule:
     - cron: 0 9 * * *
   # watch:
@@ -37,12 +35,22 @@ env:
 
 jobs:
   build:
-    name: Build 2.0.x
+    name: Build
+    
     env:
       REPO_URL: https://github.com/MarlinFirmware/Marlin.git
-      REPO_BRANCH: 2.0.x
+      
     runs-on: ubuntu-16.04
 
+    strategy:
+      matrix:
+        branch:
+        - 2.0.x
+        - 1.1.x
+        - bugfix-2.0.x
+        - bugfix-1.1.x
+        - dev-2.1.x
+        
     steps:
     - name: Checkout this repos
       uses: actions/checkout@v2
