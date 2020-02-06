@@ -55,8 +55,8 @@ jobs:
         pip install --upgrade pip
         pip install -U platformio
         python -m platformio --version
-        whereis pio
-        which pio
+        cd my_marlin
+        python -m platformio run
         
         
         
