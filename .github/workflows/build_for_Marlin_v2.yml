@@ -81,10 +81,16 @@ jobs:
         tz1: 'Asia'
         tz2: 'Shanghai' 
         
+    - name: Get the string
+      id: get_string
+      uses: ccccmagicboy/get_branch_str@master
+      with:
+        in_str: ${{ matrix.branch }}
+        
     - name: Zip the artifact
       working-directory: ./
       run: |
-        zip --junk-paths ${{ matrix.branch }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/megaatmega2560/firmware.hex README.md
+        zip --junk-paths ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/megaatmega2560/firmware.hex README.md
         
     - name: Upload the zip file
       uses: actions/upload-artifact@master
