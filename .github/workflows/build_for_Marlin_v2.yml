@@ -65,11 +65,14 @@ jobs:
     - name: Complie the Marlin
       working-directory: my_marlin
       run: |
+        python -m platformio run --help
         python -m platformio run
         ls -al
         cd .pio
         ls -al
         cd build
+        ls -al
+        cd megaatmega2560
         ls -al
         
         
