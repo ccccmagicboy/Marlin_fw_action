@@ -46,9 +46,7 @@ jobs:
       matrix:
         branch:
         - 2.0.x
-        - 1.1.x
         - bugfix-2.0.x
-        - bugfix-1.1.x
         - dev-2.1.x
         
     steps:
@@ -69,7 +67,7 @@ jobs:
       run: |
         python -m platformio run
         ls -al
-        cd .pioenvs
+        cd .pio
         ls -al
         
         
