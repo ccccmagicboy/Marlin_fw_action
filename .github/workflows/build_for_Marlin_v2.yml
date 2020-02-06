@@ -6,7 +6,7 @@
 # Url: https://ccrobot-online.com
 #===================================================================================
 
-name: MARLIN_BUILD
+name: MARLIN2_BUILD
 
 on:
   push:
