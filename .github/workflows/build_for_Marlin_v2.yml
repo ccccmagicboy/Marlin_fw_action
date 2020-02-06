@@ -64,10 +64,10 @@ jobs:
         pip install -U platformio
         python -m platformio --version
         
-    - name: Install PlatformIO Core
+    - name: Complie the Marlin
       working-directory: my_marlin
       run: |
         python -m platformio run
-        
+        ls -al
         
         
