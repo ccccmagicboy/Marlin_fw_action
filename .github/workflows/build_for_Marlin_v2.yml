@@ -11,10 +11,10 @@ name: MARLIN2_BUILD
 on:
   pull_request:
     branches:
-      - master
+    - master
   push:
     branches:
-      - master
+    - master
     paths-ignore:
     - '**.md'
   schedule:
@@ -36,7 +36,7 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
-  build_0:
+  build:
     name: Build 2.0.x
     env:
       REPO_URL: https://github.com/MarlinFirmware/Marlin.git
@@ -55,22 +55,7 @@ jobs:
         pip install --upgrade pip
         pip install -U platformio
         export PATH=$PATH:~/.platformio/penv/bin
-        whereis platformio
-        which platformio
-    
-
-  build_1:
-    name: Build bugfix-2.0.x
-    env:
-      REPO_URL: https://github.com/MarlinFirmware/Marlin.git
-      REPO_BRANCH: bugfix-2.0.x
-    runs-on: ubuntu-16.04
-    
-    steps:
-    - name: Checkout this repos
-      uses: actions/checkout@v2  
-      
-    - name: Clone the Marlin source code
-      run: git clone --depth 1 $REPO_URL -b $REPO_BRANCH my_marlin
-      
-    
+        ls ~/.platformio/penv/bin
+        
+        
+        
