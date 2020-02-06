@@ -47,7 +47,6 @@ jobs:
         branch:
         - 2.0.x
         - bugfix-2.0.x
-        - dev-2.1.x
         
     steps:
     - name: Checkout this repos
@@ -75,6 +74,23 @@ jobs:
         cd megaatmega2560
         ls -al
         
+    - name: Get the datetime
+      id: get_datetime
+      uses: ccccmagicboy/get_datetime@master
+      with:
+        tz1: 'Asia'
+        tz2: 'Shanghai' 
         
+    - name: Zip the artifact
+      working-directory: ./
+      run: |
+        zip --junk-paths ${{ matrix.branch }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/megaatmega2560/firmware.hex README.md
+        
+    - name: Upload the zip file
+      uses: actions/upload-artifact@master
+      with:
+        name: ${{ matrix.branch }}_fw_${{ steps.get_datetime.outputs.datetime_str }}
+        path: ${{ matrix.branch }}_fw_${{ steps.get_datetime.outputs.datetime_str }}.zip
+
         
         
