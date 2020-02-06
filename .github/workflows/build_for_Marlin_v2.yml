@@ -55,8 +55,8 @@ jobs:
         pip install --upgrade pip
         pip install -U platformio
         export PATH=$PATH:~/.platformio/penv/bin
-        platformio boards teensy
-    
+        whereis platformio
+        which platformio
     
 
   build_1:
