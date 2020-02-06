@@ -63,7 +63,10 @@ jobs:
         pip install --upgrade pip
         pip install -U platformio
         python -m platformio --version
-        cd my_marlin
+        
+    - name: Install PlatformIO Core
+      working-directory: my_marlin
+      run: |
         python -m platformio run
         
         
