@@ -69,5 +69,9 @@ jobs:
         ls -al
         cd .pio
         ls -al
+        cd build
+        ls -al
+        
+        
         
         
