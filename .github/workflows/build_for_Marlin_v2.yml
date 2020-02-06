@@ -54,8 +54,6 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install -U platformio
-        export PATH=$PATH:~/.platformio/penv/bin
-        ls ~/.platformio/penv/bin
-        
+        ls -al
         
         
