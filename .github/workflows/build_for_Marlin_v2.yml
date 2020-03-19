@@ -114,8 +114,8 @@ jobs:
         - ender3_cccc
         test-platform:
         - sanguino1284p
-        - melzi
-        - melzi_optiboot
+        # - melzi
+        # - melzi_optiboot
         
     steps:
     - name: Checkout this repos
