@@ -34,7 +34,7 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
-  build from official:
+  build:
     name: Build Official
     
     env:
@@ -99,7 +99,8 @@ jobs:
         path: ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }}.zip
 
         
-  build from self-host:
+  build_2:
+  
     name: Build self-host
     
     env:
