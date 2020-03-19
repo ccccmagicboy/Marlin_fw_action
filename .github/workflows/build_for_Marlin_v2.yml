@@ -141,9 +141,13 @@ jobs:
         chmod +x buildroot/share/tests/*
         export PATH=./buildroot/bin/:./buildroot/share/tests/:${PATH}
         run_tests . ${{ matrix.test-platform }}
-
-    - name: Debug the action
-      uses: p3terx/debugger-action@master
+        
+    - name: Complie the Marlin
+      working-directory: my_marlin
+      run: |
+        platformio run -e ${{ matrix.test-platform }}
+        cd .pio/build/${{ matrix.test-platform }}
+        ls -al
         
     - name: Get the datetime
       id: get_datetime
@@ -161,7 +165,7 @@ jobs:
     - name: Zip the artifact
       working-directory: ./
       run: |
-        zip --junk-paths ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/mega2560/firmware.hex README.md
+        zip --junk-paths ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/${{ matrix.test-platform }}/firmware.hex README.md
         
     - name: Upload the zip file
       uses: actions/upload-artifact@master
