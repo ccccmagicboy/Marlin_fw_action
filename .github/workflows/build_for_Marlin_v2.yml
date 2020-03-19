@@ -34,13 +34,13 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
-  build:
-    name: Build
+  build from official:
+    name: Build Official
     
     env:
       REPO_URL: https://github.com/MarlinFirmware/Marlin.git
       
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
 
     strategy:
       matrix:
@@ -71,7 +71,7 @@ jobs:
         ls -al
         cd build
         ls -al
-        cd megaatmega2560
+        cd mega2560
         ls -al
         
     - name: Get the datetime
@@ -90,7 +90,72 @@ jobs:
     - name: Zip the artifact
       working-directory: ./
       run: |
-        zip --junk-paths ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/megaatmega2560/firmware.hex README.md
+        zip --junk-paths ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/mega2560/firmware.hex README.md
+        
+    - name: Upload the zip file
+      uses: actions/upload-artifact@master
+      with:
+        name: ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }}
+        path: ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }}.zip
+
+        
+  build from self-host:
+    name: Build self-host
+    
+    env:
+      REPO_URL: https://github.com/ccccmagicboy/Marlin.git
+      
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        branch:
+        - ender3_cccc
+        test-platform:
+        - sanguino1284p
+        
+    steps:
+    - name: Checkout this repos
+      uses: actions/checkout@v2
+      
+    - name: Clone the Marlin source code
+      run: git clone --depth 1 $REPO_URL -b ${{ matrix.branch }} my_marlin
+      
+    - name: Install PlatformIO Core
+      run: |
+        pip install --upgrade pip
+        pip install -U platformio
+        python -m platformio update
+        python -m platformio --version
+        
+    - name: Run ${{ matrix.test-platform }} Tests
+      working-directory: ./my_marlin/
+      run: |
+        chmod +x buildroot/bin/*
+        chmod +x buildroot/share/tests/*
+        export PATH=./buildroot/bin/:./buildroot/share/tests/:${PATH}
+        run_tests . ${{ matrix.test-platform }}
+
+    - name: Debug the action
+      uses: p3terx/debugger-action@master
+        
+    - name: Get the datetime
+      id: get_datetime
+      uses: ccccmagicboy/get_datetime@master
+      with:
+        tz1: 'Asia'
+        tz2: 'Shanghai' 
+        
+    - name: Get the string
+      id: get_string
+      uses: ccccmagicboy/get_branch_str@master
+      with:
+        in_str: ${{ matrix.branch }}
+        
+    - name: Zip the artifact
+      working-directory: ./
+      run: |
+        zip --junk-paths ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/mega2560/firmware.hex README.md
         
     - name: Upload the zip file
       uses: actions/upload-artifact@master
