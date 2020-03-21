@@ -101,7 +101,7 @@ jobs:
         
   build_2:
   
-    name: Build self-host
+    name: Build self-host for ender3 3d printer
     
     env:
       REPO_URL: https://github.com/ccccmagicboy/Marlin.git
@@ -176,6 +176,78 @@ jobs:
         path: ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }}.zip
 
         
+  build_3:
+  
+    name: Build self-host for qimi 3d printer
+    
+    env:
+      REPO_URL: https://github.com/ccccmagicboy/Marlin.git
+      
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        branch:
+        - qimi_cccc
+        test-platform:
+        - mega2560
         
+    steps:
+    - name: Checkout this repos
+      uses: actions/checkout@v2
+      
+    - name: Clone the Marlin source code
+      run: git clone --depth 1 $REPO_URL -b ${{ matrix.branch }} my_marlin
+      
+    - name: Select Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.7' # Version range or exact version of a Python version to use, using semvers version range syntax.
+        architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified      
+      
+    - name: Install PlatformIO
+      run: |
+        pip install -U https://github.com/platformio/platformio-core/archive/master.zip
+        platformio update
+        platformio --version
+        
+    - name: Run ${{ matrix.test-platform }} Tests
+      working-directory: ./my_marlin/
+      run: |
+        chmod +x buildroot/bin/*
+        chmod +x buildroot/share/tests/*
+        export PATH=./buildroot/bin/:./buildroot/share/tests/:${PATH}
+        run_tests . ${{ matrix.test-platform }}
+        
+    - name: Complie the Marlin
+      working-directory: my_marlin
+      run: |
+        platformio run -e ${{ matrix.test-platform }}
+        cd .pio/build/${{ matrix.test-platform }}
+        ls -al
+        
+    - name: Get the datetime
+      id: get_datetime
+      uses: ccccmagicboy/get_datetime@master
+      with:
+        tz1: 'Asia'
+        tz2: 'Shanghai' 
+        
+    - name: Get the string
+      id: get_string
+      uses: ccccmagicboy/get_branch_str@master
+      with:
+        in_str: ${{ matrix.branch }}
+        
+    - name: Zip the artifact
+      working-directory: ./
+      run: |
+        zip --junk-paths ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }} my_marlin/.pio/build/${{ matrix.test-platform }}/firmware.hex README.md
+        
+    - name: Upload the zip file
+      uses: actions/upload-artifact@master
+      with:
+        name: ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }}
+        path: ${{ steps.get_string.outputs.str }}_fw_${{ steps.get_datetime.outputs.datetime_str }}.zip        
         
         
