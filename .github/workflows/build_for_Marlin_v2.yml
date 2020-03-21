@@ -211,14 +211,6 @@ jobs:
         platformio update
         platformio --version
         
-    - name: Run ${{ matrix.test-platform }} Tests
-      working-directory: ./my_marlin/
-      run: |
-        chmod +x buildroot/bin/*
-        chmod +x buildroot/share/tests/*
-        export PATH=./buildroot/bin/:./buildroot/share/tests/:${PATH}
-        run_tests . ${{ matrix.test-platform }}
-        
     - name: Complie the Marlin
       working-directory: my_marlin
       run: |
